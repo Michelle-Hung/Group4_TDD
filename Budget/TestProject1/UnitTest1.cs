@@ -30,7 +30,7 @@ public class Tests
         });
         var actual = _service.Query(new DateTime(2023, 11, 25), new DateTime(2023, 11, 25));
 
-        Assert.That(actual, Is.EqualTo(10m));
+        TotalBudgetShouldBe(10m, actual);
     }
 
     [Test]
@@ -38,7 +38,7 @@ public class Tests
     {
         GivenAllBudgets(new List<Budget.Repository.Budget>
         {
-            new Budget.Repository.Budget
+            new()
             {
                 YearMonth = "202311",
                 Amount = 300
@@ -46,7 +46,7 @@ public class Tests
         });
         var actual = _service.Query(new DateTime(2023, 11, 1), new DateTime(2023, 11, 30));
 
-        Assert.That(actual, Is.EqualTo(300m));
+        TotalBudgetShouldBe(300m, actual);
     }
 
     [Test]
@@ -54,12 +54,12 @@ public class Tests
     {
         GivenAllBudgets(new List<Budget.Repository.Budget>
         {
-            new Budget.Repository.Budget
+            new()
             {
                 YearMonth = "202311",
                 Amount = 300
             },
-            new Budget.Repository.Budget
+            new()
             {
                 YearMonth = "202310",
                 Amount = 620
@@ -67,7 +67,8 @@ public class Tests
         });
         var actual = _service.Query(new DateTime(2023, 10, 28), new DateTime(2023, 11, 3));
 
-        Assert.That(actual, Is.EqualTo(110m));
+        TotalBudgetShouldBe(110m, actual);
+
     }
 
     [Test]
@@ -75,12 +76,12 @@ public class Tests
     {
         GivenAllBudgets(new List<Budget.Repository.Budget>
         {
-            new Budget.Repository.Budget
+            new()
             {
                 YearMonth = "202311",
                 Amount = 300
             },
-            new Budget.Repository.Budget
+            new()
             {
                 YearMonth = "202310",
                 Amount = 620
@@ -88,7 +89,7 @@ public class Tests
         });
         var actual = _service.Query(new DateTime(2023, 09, 28), new DateTime(2023, 11, 3));
 
-        Assert.That(actual, Is.EqualTo(650m));
+        TotalBudgetShouldBe(650m, actual);
     }
 
     [Test]
@@ -97,7 +98,7 @@ public class Tests
         GivenAllBudgets(new List<Budget.Repository.Budget>());
         var actual = _service.Query(new DateTime(2023, 09, 28), new DateTime(2023, 9, 30));
 
-        Assert.That(actual, Is.EqualTo(0m));
+        TotalBudgetShouldBe(0m, actual);
     }
 
     [Test]
@@ -118,7 +119,7 @@ public class Tests
         });
         var actual = _service.Query(new DateTime(2023, 12, 28), new DateTime(2024, 1, 5));
 
-        Assert.That(actual, Is.EqualTo(190m));
+        TotalBudgetShouldBe(190m, actual);
     }
 
     [Test]
@@ -134,7 +135,7 @@ public class Tests
         });
         var actual = _service.Query(new DateTime(2020, 02, 20), new DateTime(2020, 2, 29));
 
-        Assert.That(actual, Is.EqualTo(100m));
+        TotalBudgetShouldBe(100m, actual);
     }
 
     [Test]
@@ -150,7 +151,12 @@ public class Tests
         });
         var actual = _service.Query(new DateTime(2020, 02, 29), new DateTime(2020, 2, 20));
 
-        Assert.That(actual, Is.EqualTo(0m));
+        TotalBudgetShouldBe(0m, actual);
+    }
+
+    private static void TotalBudgetShouldBe(decimal expected, decimal actual)
+    {
+        Assert.That(actual, Is.EqualTo(expected));
     }
 
 
