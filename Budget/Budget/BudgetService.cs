@@ -15,18 +15,15 @@ public class BudgetService
     public decimal Query(DateTime start, DateTime end)
     {
         var budgets = _budgetRepo.GetAll();
-
-        var periods = GetPeriod(start, end);
+        var daysOfMonthList = GetDaysOfMonth(start, end);
         var total = 0m;
-        foreach (var period in periods)
+        foreach (var daysOfMonth in daysOfMonthList)
         {
-            var budget = budgets.FirstOrDefault(x => x.YearMonth == period.Key);
-            if (budget != null)
-            {
-                var days = GetDays(period.Key);
-                var budgetAmount = budget.Amount / days;
-                total += budgetAmount * period.Value;
-            }
+            var budget = budgets.FirstOrDefault(x => x.YearMonth == daysOfMonth.Key);
+            if (budget == null) continue;
+            var days = GetDays(daysOfMonth.Key);
+            var budgetAmount = (decimal)budget.Amount / days;
+            total += budgetAmount * daysOfMonth.Value;
         }
 
         return total;
@@ -38,26 +35,25 @@ public class BudgetService
         return DateTime.DaysInMonth(dateTime.Year, dateTime.Month);
     }
 
-    private Dictionary<string, int> GetPeriod(DateTime start, DateTime end)
+    private Dictionary<string, int> GetDaysOfMonth(DateTime start, DateTime end)
     {
-        var dictionary = new Dictionary<string, int>();
-
+        var periodMapping = new Dictionary<string, int>();
         var current = start;
         while (current <= end)
         {
             var key = current.ToString("yyyyMM");
-            if (dictionary.ContainsKey(key))
+            if (periodMapping.ContainsKey(key))
             {
-                dictionary[key]++;
+                periodMapping[key]++;
             }
             else
             {
-                dictionary.Add(key, 1);
+                periodMapping.Add(key, 1);
             }
 
             current = current.AddDays(1);
         }
 
-        return dictionary;
+        return periodMapping;
     }
 }
