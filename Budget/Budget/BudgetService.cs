@@ -1,3 +1,4 @@
+using System.Globalization;
 using Budget.Repository;
 
 namespace Budget;
@@ -14,21 +15,49 @@ public class BudgetService
     public decimal Query(DateTime start, DateTime end)
     {
         var budgets = _budgetRepo.GetAll();
-        if (start.Year == end.Year && start.Month == end.Month)
+
+        var periods = GetPeriod(start, end);
+        var total = 0m;
+        foreach (var period in periods)
         {
-            var budget = budgets.SingleOrDefault(x => x.YearMonth == start.ToString("yyyyMM"));
+            var budget = budgets.FirstOrDefault(x => x.YearMonth == period.Key);
             if (budget != null)
             {
-                var days = (end - start).Days + 1;
-                return budget.Amount /(decimal)DateTime.DaysInMonth(start.Year, start.Month) * days;
+                var days = GetDays(period.Key);
+                var budgetAmount = budget.Amount / days;
+                total += budgetAmount * period.Value;
             }
         }
-        else
+
+        return total;
+    }
+
+    private static int GetDays(string periodKey)
+    {
+        var dateTime = DateTime.ParseExact(periodKey, "yyyyMM", CultureInfo.InvariantCulture);
+        return DateTime.DaysInMonth(dateTime.Year, dateTime.Month);
+    }
+
+    private Dictionary<string, int> GetPeriod(DateTime start, DateTime end)
+    {
+        var dictionary = new Dictionary<string, int>();
+
+        var current = start;
+        while (current <= end)
         {
-            
-            
+            var key = current.ToString("yyyyMM");
+            if (dictionary.ContainsKey(key))
+            {
+                dictionary[key]++;
+            }
+            else
+            {
+                dictionary.Add(key, 1);
+            }
+
+            current = current.AddDays(1);
         }
 
-        return 0m;
+        return dictionary;
     }
 }
