@@ -1,6 +1,6 @@
 namespace Budget.Repository;
 
-public class BudgetDto
+public class Budget
 {
     public string YearMonth { get; set; }
     public int Amount { get; set; }

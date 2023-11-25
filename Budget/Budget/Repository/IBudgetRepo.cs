@@ -2,5 +2,5 @@ namespace Budget.Repository;
 
 public interface IBudgetRepo
 {
-    List<BudgetDto> GetAll();
+    List<Budget> GetAll();
 }

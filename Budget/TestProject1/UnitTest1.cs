@@ -20,7 +20,7 @@ public class Tests
     [Test]
     public void one_day()
     {
-        GivenAllBudgets(new List<BudgetDto>
+        GivenAllBudgets(new List<Budget.Repository.Budget>
         {
             new()
             {
@@ -36,7 +36,7 @@ public class Tests
     [Test]
     public void one_month()
     {
-        GivenAllBudgets(new List<BudgetDto>
+        GivenAllBudgets(new List<Budget.Repository.Budget>
         {
             new()
             {
@@ -52,7 +52,7 @@ public class Tests
     [Test]
     public void cross_month()
     {
-        GivenAllBudgets(new List<BudgetDto>
+        GivenAllBudgets(new List<Budget.Repository.Budget>
         {
             new()
             {
@@ -74,7 +74,7 @@ public class Tests
     [Test]
     public void cross_month_no_budget()
     {
-        GivenAllBudgets(new List<BudgetDto>
+        GivenAllBudgets(new List<Budget.Repository.Budget>
         {
             new()
             {
@@ -95,7 +95,7 @@ public class Tests
     [Test]
     public void same_month_no_budget()
     {
-        GivenAllBudgets(new List<BudgetDto>());
+        GivenAllBudgets(new List<Budget.Repository.Budget>());
         var actual = _service.Query(new DateTime(2023, 09, 28), new DateTime(2023, 9, 30));
 
         TotalBudgetShouldBe(0m, actual);
@@ -104,14 +104,14 @@ public class Tests
     [Test]
     public void cross_year()
     {
-        GivenAllBudgets(new List<BudgetDto>
+        GivenAllBudgets(new List<Budget.Repository.Budget>
         {
-            new BudgetDto
+            new Budget.Repository.Budget
             {
                 YearMonth = "202312",
                 Amount = 310
             },
-            new BudgetDto
+            new Budget.Repository.Budget
             {
                 YearMonth = "202401",
                 Amount = 930
@@ -125,9 +125,9 @@ public class Tests
     [Test]
     public void leap_year()
     {
-        GivenAllBudgets(new List<BudgetDto>
+        GivenAllBudgets(new List<Budget.Repository.Budget>
         {
-            new BudgetDto
+            new Budget.Repository.Budget
             {
                 YearMonth = "202002",
                 Amount = 290
@@ -141,7 +141,7 @@ public class Tests
     [Test]
     public void invalid_period()
     {
-        GivenAllBudgets(new List<BudgetDto>
+        GivenAllBudgets(new List<Budget.Repository.Budget>
         {
             new()
             {
@@ -160,7 +160,7 @@ public class Tests
     }
 
 
-    private void GivenAllBudgets(List<BudgetDto> budgets)
+    private void GivenAllBudgets(List<Budget.Repository.Budget> budgets)
     {
         _budgetRepo.GetAll().Returns(budgets);
     }
